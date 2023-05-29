@@ -6,9 +6,11 @@ const contact = new Schema(
     name: {
       type: String,
       required: [true, "Set name for contact"],
+      unique: true,
     },
     email: {
       type: String,
+      unique: true,
     },
     phone: {
       type: String,
@@ -16,6 +18,11 @@ const contact = new Schema(
     favorite: {
       type: Boolean,
       default: false,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
     },
   },
   { versionKey: false, timestamps: true }
