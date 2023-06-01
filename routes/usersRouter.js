@@ -5,6 +5,7 @@ const {
   validateBody,
   authenticate,
   validateSubscription,
+  upload,
 } = require("../middlewares");
 const {
   userSchema,
@@ -16,12 +17,16 @@ const {
   logout,
   getCurrentUser,
   changeTypeSubscription,
+  updateUserAvatar,
 } = require("../controllers/usersControllers");
 
 router.route("/register").post(validateBody(userSchema), createUser);
 router.route("/login").post(validateBody(userSchema), login);
 router.route("/logout").post(authenticate, logout);
 router.route("/current").get(authenticate, getCurrentUser);
+router
+  .route("/avatars")
+  .patch(authenticate, upload.single("avatar"), updateUserAvatar);
 router
   .route("/")
   .patch(
