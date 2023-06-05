@@ -4,17 +4,18 @@ const {
   logoutService,
   getCurrentUserService,
   changeTypeSubscriptionService,
+  updateUserAvatarService,
 } = require("../services/usersServices");
 const { ctrlWrapper } = require("../utils/decorators");
 const bcrypt = require("bcrypt");
 const { HttpError } = require("../utils/errors");
+const gravatar = require("gravatar");
 
 const createUser = ctrlWrapper(async (req, res) => {
   const { password, email } = req.body;
-
   const hash = await bcrypt.hash(password, 10);
-
-  const user = await createUserService({ password: hash, email });
+  const avatarURL = gravatar.url(email);
+  const user = await createUserService({ password: hash, email, avatarURL });
 
   res.status(201).json({
     user: {
@@ -58,10 +59,17 @@ const changeTypeSubscription = ctrlWrapper(async (req, res) => {
   res.json({ email, subscription });
 });
 
+const updateUserAvatar = ctrlWrapper(async (req, res) => {
+  const { avatarURL } = await updateUserAvatarService(req);
+
+  res.json({ avatarURL });
+});
+
 module.exports = {
   createUser,
   login,
   logout,
   getCurrentUser,
   changeTypeSubscription,
+  updateUserAvatar,
 };

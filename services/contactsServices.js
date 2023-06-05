@@ -5,11 +5,8 @@ function getContactsService(owner, page, limit, favorite) {
 
   const filter = {};
 
-  console.log(favorite);
-
   if (favorite === "true") {
     filter.favorite = true;
-    console.log(filter);
   }
 
   if (favorite === "false") {
@@ -18,6 +15,7 @@ function getContactsService(owner, page, limit, favorite) {
 
   return Contact.find({ owner, favorite }, "-createdAt -updatedAt")
     .skip(skip)
+    .limit(limit)
     .populate("owner", "email subscription");
 }
 
