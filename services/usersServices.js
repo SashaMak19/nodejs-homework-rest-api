@@ -38,7 +38,7 @@ const loginService = async ({ email, password }) => {
 };
 
 const logoutService = async ({ _id }) => {
-  return await User.findByIdAndUpdate(_id, { token: "" });
+  return await User.findByIdAndUpdate(_id, { token: null });
 };
 
 const getCurrentUserService = async ({ _id }) => {
