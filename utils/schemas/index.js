@@ -3,6 +3,7 @@ const statusSchema = require("./statusSchema");
 const {
   userSchema,
   subscriptionUserValidationSchema,
+  emailSchema,
 } = require("./userSchema");
 
 module.exports = {
@@ -10,4 +11,5 @@ module.exports = {
   statusSchema,
   userSchema,
   subscriptionUserValidationSchema,
+  emailSchema,
 };

@@ -10,9 +10,12 @@ const {
 const {
   userSchema,
   subscriptionUserValidationSchema,
+  emailSchema,
 } = require("../utils/schemas");
 const {
   createUser,
+  verifyToken,
+  resendEmail,
   login,
   logout,
   getCurrentUser,
@@ -21,6 +24,8 @@ const {
 } = require("../controllers/usersControllers");
 
 router.route("/register").post(validateBody(userSchema), createUser);
+router.route("/verify/:verificationToken").get(verifyToken);
+router.route("/verify").post(validateBody(emailSchema), resendEmail);
 router.route("/login").post(validateBody(userSchema), login);
 router.route("/logout").post(authenticate, logout);
 router.route("/current").get(authenticate, getCurrentUser);

@@ -18,10 +18,43 @@ const createUserService = async (data) => {
   return await User.create(data);
 };
 
+const verifyTokenService = async (verificationToken) => {
+  const user = await User.findOne({ verificationToken });
+
+  if (user === null) {
+    throw new HttpError(404);
+  }
+
+  await User.findByIdAndUpdate(user._id, {
+    verificationToken: null,
+    verified: true,
+  });
+};
+
+const resendEmailService = async (email) => {
+  const user = await User.findOne({ email });
+
+  if (user === null) {
+    throw new HttpError(400);
+  }
+
+  if (user.verified || !user.verificationToken) {
+    throw new HttpError(400, "Verification has already been passed");
+  }
+
+  return user;
+};
+
 const loginService = async ({ email, password }) => {
   const user = await User.findOne({ email });
+  const { verificationToken, verified } = user;
+
   if (user === null) {
     throw new HttpError(401, "Email or password is wrong");
+  }
+
+  if (verificationToken || !verified) {
+    throw new HttpError(401, "Not verified");
   }
 
   const match = await bcrypt.compare(password, user.password);
@@ -38,7 +71,13 @@ const loginService = async ({ email, password }) => {
 };
 
 const logoutService = async ({ _id }) => {
-  return await User.findByIdAndUpdate(_id, { token: null });
+  const user = await User.findByIdAndUpdate(_id, { token: null });
+
+  if (!user) {
+    throw new HttpError(401);
+  }
+
+  return user;
 };
 
 const getCurrentUserService = async ({ _id }) => {
@@ -68,6 +107,8 @@ const updateUserAvatarService = async (data) => {
 
 module.exports = {
   createUserService,
+  verifyTokenService,
+  resendEmailService,
   loginService,
   logoutService,
   getCurrentUserService,
