@@ -30,4 +30,8 @@ const subscriptionUserValidationSchema = Joi.object().keys({
   subscription: userSchema.extract("subscription").required(),
 });
 
-module.exports = { userSchema, subscriptionUserValidationSchema };
+const emailSchema = Joi.object().keys({
+  email: userSchema.extract("email").required(),
+});
+
+module.exports = { userSchema, subscriptionUserValidationSchema, emailSchema };
